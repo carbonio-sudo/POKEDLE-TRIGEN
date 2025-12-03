@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block titulo %} PokeDle {% endblock titulo %}
+
+{% block conteudo %}
+
+<h1 class="text-center mt-3 text-black fw-bold">Pokémon Wordle</h1>
+
+<form method="POST" class="text-center mt-4">
+    <input type="text" id="poke-input" name="guess" placeholder="Digite um Pokémon" autocomplete="off" required>
+    <div id="autocomplete-box"></div>
+    <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+</form>
+
+<form action="/reset" method="POST" class="text-center mt-3">
+    <button class="btn btn-danger">Resetar Tentativas</button>
+</form>
+
+<p class="text-center fs-4 mt-3">{{ message }}</p>
+
+<div class="container mt-4">
+    <div class="row text-center fw-bold">
+        <div class="col">Sprite</div>
+        <div class="col">Tipo 1</div>
+        <div class="col">Tipo 2</div>
+        <div class="col">Habitat</div>
+        <div class="col">Cor</div>
+        <div class="col">Fase</div>
+        <div class="col">Altura</div>
+        <div class="col">Peso</div>
+    </div>
+</div>
+
+<div class="container">
+    {% for row in attempts %}
+    <div class="row text-center mt-2">
+        <div class="col">
+            <img src="{{ row.sprite }}" width="64">
+        </div>
+
+        <div class="col cell {{ row.tipo1_cor }}">{{ row.tipo1 }}</div>
+        <div class="col cell {{ row.tipo2_cor }}">{{ row.tipo2 }}</div>
+        <div class="col cell {{ row.habitat_cor }}">{{ row.habitat }}</div>
+        <div class="col cell {{ row.cor_cor }}">{{ row.cor }}</div>
+        <div class="col cell {{ row.fase_cor }}">{{ row.fase }}</div>
+        <div class="col cell {{ row.altura_cor }}">{{ row.altura }}</div>
+        <div class="col cell {{ row.peso_cor }}">{{ row.peso }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if session.venceu %}
+<div id="tela-vitoria">
+    <div class="vitoria-box">
+        <h1>🎉 Parabéns!</h1>
+        <p>Você acertou o Pokémon: <b>{{ alvo }}</b></p>
+        <form action="/reset" method="POST">
+            <button class="btn btn-success mt-3">Jogar Novamente</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% if alvo %}
+<h3 class="text-center mt-4 text-danger">
+    🔍 Pokémon sorteado: <b>{{ alvo }}</b>
+</h3>
+{% endif %}
+
+<script>
+const listaPokemons = {{ pokemon_list | tojson }};
+const input = document.getElementById("poke-input");
+const box = document.getElementById("autocomplete-box");
+
+input.addEventListener("input", () => {
+    const value = input.value.toLowerCase();
+    box.innerHTML = "";
+    input.dataset.first = "";
+
+    if (!value) return;
+
+    const filtrados = listaPokemons
+        .filter(nome => nome.startsWith(value))
+        .slice(0, 8);
+
+    if (filtrados.length > 0) {
+        input.dataset.first = filtrados[0];
+    }
+
+    filtrados.forEach(nome => {
+        const item = document.createElement("div");
+        item.classList.add("suggestion");
+        item.textContent = nome;
+
+        item.onclick = () => {
+            input.value = nome;
+            box.innerHTML = "";
+        };
+
+        box.appendChild(item);
+    });
+});
+
+document.querySelector("form").addEventListener("submit", () => {
+    box.innerHTML = "";
+});
+
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        const first = input.dataset.first;
+        if (first) {
+            input.value = first;
+        }
+    }
+});
+</script>
+
+{% endblock conteudo %}
