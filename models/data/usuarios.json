@@ -1,6 +1,20 @@
 [
     {
         "usuario": "jorge",
-        "senha": "1"
+        "senha": "1",
+        "pontos": 180
+    },
+    {
+        "usuario": "1",
+        "senha": "1",
+        "pontos": 40,
+        "apelido": "dog"
+    },
+    {
+        "usuario": "2",
+        "senha": "2",
+        "apelido": "mobile",
+        "foto": "default.png",
+        "pontos": 90
     }
 ]

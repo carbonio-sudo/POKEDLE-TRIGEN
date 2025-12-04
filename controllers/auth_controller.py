@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, session, redirect, url_for, flash
 from models.user import carregar_usuarios, salvar_usuarios
 
 def registro():
@@ -13,7 +13,14 @@ def registro():
                 flash("❌ Nome de usuário já existe!")
                 return redirect(url_for("registro"))
 
-        usuarios.append({"usuario": usuario, "senha": senha})
+        usuarios.append({
+            "usuario": usuario,
+            "senha": senha,
+            "apelido": None,
+            "foto": "default.png",
+            "pontos": 0
+        })
+
         salvar_usuarios(usuarios)
 
         flash("✅ Usuário registrado com sucesso!")
@@ -33,12 +40,14 @@ def login():
             if u["usuario"] == usuario and u["senha"] == senha:
                 session["logado"] = True
                 session["usuario"] = usuario
+                session["apelido"] = u.get("apelido")
+                session["foto"] = u.get("foto", "default.png")
                 return redirect(url_for("index"))
 
         flash("❌ Usuário ou senha incorretos.")
         return redirect(url_for("login"))
 
-    return render_template("login.html")    
+    return render_template("login.html")
 
 
 def logout():

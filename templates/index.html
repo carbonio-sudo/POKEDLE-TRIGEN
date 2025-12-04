@@ -6,6 +6,10 @@
 
 <h1 class="text-center mt-3 text-black fw-bold">Pokémon Wordle</h1>
 
+<h3 class="text-center text-primary mt-2">
+    Pontos: <b>{{ pontos }}</b>
+</h3>
+
 <form method="POST" class="text-center mt-4">
     <input type="text" id="poke-input" name="guess" placeholder="Digite um Pokémon" autocomplete="off" required>
     <div id="autocomplete-box"></div>
@@ -54,6 +58,7 @@
     <div class="vitoria-box">
         <h1>🎉 Parabéns!</h1>
         <p>Você acertou o Pokémon: <b>{{ alvo }}</b></p>
+        <p>Pontuação final: <b>{{ pontos }}</b></p>
         <form action="/reset" method="POST">
             <button class="btn btn-success mt-3">Jogar Novamente</button>
         </form>

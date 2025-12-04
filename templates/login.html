@@ -3,36 +3,48 @@
 {% block titulo %} Página de Login {% endblock titulo %}
 
 {% block conteudo %}
-    
-<div class="login-container mx-auto mt-5" style="max-width: 420px;">
-    <h2 class="text-center mb-4">Login</h2>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="alert alert-danger" role="alert">
-                {% for mensagem in messages %}
-                    <p>{{ mensagem }}</p>
-                {% endfor %}
+<div id="login-page">
+
+    <!-- Fundo com imagem -->
+    <div id="login-background"></div>
+
+    <div id="login-box" class="login-container mx-auto mt-5">
+
+        <h2 id="login-title" class="text-center mb-4">Login</h2>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div id="login-alert" class="alert alert-danger" role="alert">
+                    {% for mensagem in messages %}
+                        <p>{{ mensagem }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form id="login-form" action="{{ url_for('login') }}" method="post">
+
+            <div class="form-group mb-3 login-field">
+                <label for="usuario" class="login-label">Usuário</label>
+                <input type="text" required class="form-control login-input"
+                       name="usuario" id="usuario">
             </div>
-        {% endif %}
-    {% endwith %}
 
-    <form action="{{ url_for('login') }}" method="post">
-        <div class="form-group mb-3">
-            <label for="usuario">Usuário</label>
-            <input type="text" required class="form-control" name="usuario" id="usuario">
-        </div>
+            <div class="form-group mb-3 login-field">
+                <label for="senha" class="login-label">Senha</label>
+                <input type="password" required class="form-control login-input"
+                       name="senha" id="senha">
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="senha">Senha</label>
-            <input type="password" required class="form-control" name="senha" id="senha">
-        </div>
+            <button id="login-button" type="submit" class="btn btn-primary w-100">
+                Entrar
+            </button>
 
-        <button type="submit" class="btn btn-primary w-100">Entrar</button>
-    </form>
+        </form>
 
-    <div class="text-center mt-3">
-        <a href="#" class="forgot-password">Esqueci a senha</a>
     </div>
+
 </div>
+
 {% endblock conteudo %}
