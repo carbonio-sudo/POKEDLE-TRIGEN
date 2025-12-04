@@ -1,7 +1,8 @@
 from flask import render_template, request, session, redirect, url_for
 import requests
 import random
-from models.user import carregar_usuarios, salvar_usuarios
+from models.user import carregar_usuarios
+from models.pontos import get_pontos, set_pontos
 
 LISTA_POKEMONS = []
 pokemon_alvo = None
@@ -15,8 +16,9 @@ def carregar_nomes():
 
 carregar_nomes()
 
-
-# -------- FUNÇÃO PARA CALCULAR FASE ---------
+# ==========================
+#      EVOLUÇÃO / FASE
+# ==========================
 
 def encontrar_fase(cadeia, alvo, fase=1):
     if cadeia["species"]["name"] == alvo:
@@ -29,22 +31,17 @@ def encontrar_fase(cadeia, alvo, fase=1):
     
     return None
 
-
 def calcular_fase(especie):
     url_chain = especie["evolution_chain"]["url"]
     cadeia = requests.get(url_chain).json()["chain"]
-
     nome_especie = especie["name"]
-
     fase = encontrar_fase(cadeia, nome_especie)
-
-    if fase is None:
-        return 1  
-
-    return fase
+    return fase or 1
 
 
-# -------- CARREGA DADOS DO POKEMON ---------
+# ==========================
+#      DADOS POKÉMON
+# ==========================
 
 def obter_dados(nome):
     nome = str(nome).lower()
@@ -61,10 +58,6 @@ def obter_dados(nome):
     tipo1 = tipos[0]
     tipo2 = tipos[1] if len(tipos) > 1 else "nenhum"
 
-    fase = calcular_fase(especie)
-    if fase is None:
-        fase = 1
-
     return {
         "nome": d["name"],
         "sprite": d["sprites"]["front_default"],
@@ -75,11 +68,13 @@ def obter_dados(nome):
         "peso": d["weight"],
         "habitat": especie["habitat"]["name"] if especie["habitat"] else "desconhecido",
         "cor": especie["color"]["name"],
-        "fase": fase
+        "fase": calcular_fase(especie)
     }
 
 
-# -------- SORTEIA POKEMON ---------
+# ==========================
+#      SORTEAR POKÉMON
+# ==========================
 
 def sortear():
     global pokemon_alvo
@@ -92,26 +87,9 @@ def sortear():
 sortear()
 
 
-# -------- PONTOS ---------
-
-def salvar_pontos(usuario, pontos):
-    usuarios = carregar_usuarios()
-    for u in usuarios:
-        if u["usuario"] == usuario:
-            u["pontos"] = pontos
-            break
-    salvar_usuarios(usuarios)
-
-
-def carregar_pontos(usuario):
-    usuarios = carregar_usuarios()
-    for u in usuarios:
-        if u["usuario"] == usuario:
-            return u.get("pontos", 0)
-    return 0
-
-
-# -------- RESET ---------
+# ==========================
+#          RESET
+# ==========================
 
 def reset():
     session["tentativas"] = []
@@ -121,7 +99,9 @@ def reset():
     return redirect(url_for("index"))
 
 
-# -------- PÁGINA PRINCIPAL ---------
+# ==========================
+#     PÁGINA PRINCIPAL
+# ==========================
 
 def index():
     global pokemon_alvo
@@ -129,19 +109,19 @@ def index():
     if not session.get("logado"):
         return redirect(url_for("login"))
 
-    if "tentativas" not in session:
-        session["tentativas"] = []
+    # carrega tentativas
+    session.setdefault("tentativas", [])
+    session.setdefault("venceu", False)
 
-    if "venceu" not in session:
-        session["venceu"] = False
+    # carrega pontos do arquivo pontos.json
+    session.setdefault("pontos", get_pontos(session["usuario"]))
 
-    if "pontos" not in session:
-        session["pontos"] = carregar_pontos(session["usuario"])
-
-    if session.get("venceu"):
+    # caso já tenha vencido
+    if session["venceu"]:
         tent = session["tentativas"][::-1]
-        salvar_pontos(session["usuario"], session["pontos"])
-        return render_template("index.html",
+        set_pontos(session["usuario"], session["pontos"])
+        return render_template(
+            "index.html",
             message="🎉 Você já venceu!",
             attempts=tent,
             alvo=pokemon_alvo["nome"],
@@ -149,6 +129,7 @@ def index():
             pokemon_list=[]
         )
 
+    # tentativa enviada
     if request.method == "POST":
         chute = request.form.get("guess", "").lower()
 
@@ -161,31 +142,38 @@ def index():
             session["mensagem"] = "Pokémon inválido!"
             return redirect(url_for("index"))
 
+        # já tentado
         for t in session["tentativas"]:
             if t["nome"] == dados["nome"]:
                 session["mensagem"] = "❌ Você já tentou esse!"
                 return redirect(url_for("index"))
 
+        # registra tentativa
         tentativa = montar_feedback(dados)
         session["tentativas"].append(tentativa)
+
+        # perde pontos
         if session["pontos"] > 0:
             session["pontos"] -= 5
 
+        # acertou
         if dados["nome"] == pokemon_alvo["nome"]:
             session["venceu"] = True
             session["pontos"] += 50
             session["mensagem"] = "🎉 Você acertou!"
-            salvar_pontos(session["usuario"], session["pontos"])
+            set_pontos(session["usuario"], session["pontos"])
 
         session.modified = True
         return redirect(url_for("index"))
 
+    # exibe tela normal
     mensagem = session.pop("mensagem", "")
     tent = session["tentativas"][::-1]
     nomes_usados = {t["nome"] for t in session["tentativas"]}
     lista = [n for n in LISTA_POKEMONS if n not in nomes_usados]
 
-    return render_template("index.html",
+    return render_template(
+        "index.html",
         message=mensagem,
         attempts=tent,
         pokemon_list=lista,
@@ -194,7 +182,9 @@ def index():
     )
 
 
-# -------- MONTAR FEEDBACK ---------
+# ==========================
+#      FEEDBACK
+# ==========================
 
 def montar_feedback(p):
     alvo = pokemon_alvo
