@@ -1,5 +1,6 @@
 from flask import render_template, request, session, redirect, url_for
 from models.user import carregar_usuarios, salvar_usuarios
+from models.pontos import carregar_todos_pontos, salvar_todos_pontos
 import os
 
 def perfil():
@@ -17,14 +18,10 @@ def perfil():
         return "Usuário não encontrado", 404
 
     if request.method == "POST":
-
-        # Atualizar apelido
         usuario["apelido"] = request.form.get("apelido", "")
 
-        # Garantir que a pasta existe
         os.makedirs("static/img", exist_ok=True)
 
-        # Upload da foto
         foto = request.files.get("foto")
         if foto and foto.filename != "":
             caminho_foto = f"static/img/{usuario_logado}.jpg"
@@ -39,3 +36,29 @@ def perfil():
         usuario=usuario,
         foto=usuario.get("foto", "static/img/default.png")
     )
+
+
+def excluir_conta():
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    usuario_logado = session["usuario"]
+
+    # Remover do usuarios.json
+    usuarios = carregar_usuarios()
+    usuarios = [u for u in usuarios if u["usuario"] != usuario_logado]
+    salvar_usuarios(usuarios)
+
+    # Remover dos pontos
+    pontos = carregar_todos_pontos()
+    if usuario_logado in pontos:
+        del pontos[usuario_logado]
+    salvar_todos_pontos(pontos)
+
+    # Remover foto do usuário
+    caminho = f"static/img/{usuario_logado}.jpg"
+    if os.path.exists(caminho):
+        os.remove(caminho)
+
+    session.clear()
+    return redirect(url_for("login"))

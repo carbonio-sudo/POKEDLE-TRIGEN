@@ -1,23 +1,31 @@
 import json
 import os
 
-CAMINHO_DB_PONTOS = "models/data/pontos.json"
-
-def carregar_pontos():
-    if os.path.exists(CAMINHO_DB_PONTOS):
-        with open(CAMINHO_DB_PONTOS, "r") as f:
-            return json.load(f)
-    return {}
-
-def salvar_pontos(pontos):
-    with open(CAMINHO_DB_PONTOS, "w") as f:
-        json.dump(pontos, f, indent=4)
+CAMINHO_DB = "models/data/pontos.json"
 
 def get_pontos(usuario):
-    pontos = carregar_pontos()
-    return pontos.get(usuario, 0)
+    if os.path.exists(CAMINHO_DB):
+        with open(CAMINHO_DB, "r") as f:
+            dados = json.load(f)
+            return dados.get(usuario, 0)
+    return 0
 
-def set_pontos(usuario, valor):
-    pontos = carregar_pontos()
-    pontos[usuario] = valor
-    salvar_pontos(pontos)
+def set_pontos(usuario, pontos):
+    dados = {}
+    if os.path.exists(CAMINHO_DB):
+        with open(CAMINHO_DB, "r") as f:
+            dados = json.load(f)
+    dados[usuario] = pontos
+    with open(CAMINHO_DB, "w") as f:
+        json.dump(dados, f, indent=4)
+
+def add_pontos(usuario, pontos):
+    atuais = get_pontos(usuario)
+    set_pontos(usuario, atuais + pontos)
+
+def get_all_pontos():
+    if os.path.exists(CAMINHO_DB):
+        with open(CAMINHO_DB, "r") as f:
+            dados = json.load(f)
+            return sorted(dados.items(), key=lambda x: x[1], reverse=True)
+    return []

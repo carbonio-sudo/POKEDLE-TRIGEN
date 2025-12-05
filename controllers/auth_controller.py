@@ -1,6 +1,6 @@
 from flask import render_template, request, session, redirect, url_for, flash
 from models.user import carregar_usuarios, salvar_usuarios
-from models.pontos import get_pontos, set_pontos
+from models.pontos import get_pontos, set_pontos, get_all_pontos
 
 def registro():
     if request.method == "POST":
@@ -17,13 +17,13 @@ def registro():
         usuarios.append({
             "usuario": usuario,
             "senha": senha,
-            "apelido": None,
+            "apelido": usuario,  
             "foto": "default.png"
         })
 
         salvar_usuarios(usuarios)
 
-        # inicia com 0 pontos no arquivo pontos.json
+        
         set_pontos(usuario, 0)
 
         flash("✅ Usuário registrado com sucesso!")
@@ -57,3 +57,8 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("login"))
+
+
+def main():
+    ranking = get_all_pontos()
+    return render_template("main.html", ranking=ranking)

@@ -2,29 +2,42 @@
 {% block titulo %}Editar Perfil{% endblock %}
 
 {% block conteudo %}
-<div class="mx-auto mt-4" style="max-width: 420px;">
 
-    <h2 class="text-center mb-3">Editar Perfil</h2>
+<div id="editar-page">
 
-    <div class="text-center mb-3">
-        <img src="/{{ foto }}" class="rounded-circle" width="150">
+    <div id="editar-background"></div>
+
+    <div id="editar-container">
+
+        <h2 id="editar-title">Editar Perfil</h2>
+
+        <div class="text-center mb-3">
+            <img src="/{{ foto }}" 
+                 id="editar-foto" 
+                 class="rounded-circle">
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+
+            <label class="editar-label">Apelido</label>
+            <input type="text" name="apelido" class="editar-input"
+                   value="{{ usuario.apelido }}" required>
+
+            <label class="editar-label">Foto de Perfil</label>
+            <input type="file" accept=".jpg,.png,.gif" name="foto" class="editar-input">
+
+            <button class="editar-botao">Salvar Alterações</button>
+        </form>
+
+        <form method="post" action="{{ url_for('excluir_conta') }}">
+            <button class="editar-botao-excluir"
+                    onclick="return confirm('Tem certeza que deseja excluir sua conta? Esta ação é irreversível!');">
+                Excluir Conta
+            </button>
+        </form>
+
     </div>
 
-    <form method="post" enctype="multipart/form-data">
-
-        <div class="mb-3">
-            <label>Apelido</label>
-            <input type="text" name="apelido" class="form-control"
-                   value="{{ apelido }}">
-        </div>
-
-        <div class="mb-3">
-            <label>Foto de Perfil</label>
-            <input type="file" name="foto" class="form-control">
-        </div>
-
-        <button class="btn btn-primary w-100">Salvar Alterações</button>
-
-    </form>
 </div>
+
 {% endblock %}

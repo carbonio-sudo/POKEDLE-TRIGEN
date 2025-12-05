@@ -1,7 +1,6 @@
 from flask import render_template, request, session, redirect, url_for
 import requests
 import random
-from models.user import carregar_usuarios
 from models.pontos import get_pontos, set_pontos
 
 LISTA_POKEMONS = []
@@ -15,10 +14,6 @@ def carregar_nomes():
         LISTA_POKEMONS = [p["name"] for p in r.json()["results"]]
 
 carregar_nomes()
-
-# ==========================
-#      EVOLUÇÃO / FASE
-# ==========================
 
 def encontrar_fase(cadeia, alvo, fase=1):
     if cadeia["species"]["name"] == alvo:
@@ -37,11 +32,6 @@ def calcular_fase(especie):
     nome_especie = especie["name"]
     fase = encontrar_fase(cadeia, nome_especie)
     return fase or 1
-
-
-# ==========================
-#      DADOS POKÉMON
-# ==========================
 
 def obter_dados(nome):
     nome = str(nome).lower()
@@ -71,11 +61,6 @@ def obter_dados(nome):
         "fase": calcular_fase(especie)
     }
 
-
-# ==========================
-#      SORTEAR POKÉMON
-# ==========================
-
 def sortear():
     global pokemon_alvo
     poke = None
@@ -86,11 +71,6 @@ def sortear():
 
 sortear()
 
-
-# ==========================
-#          RESET
-# ==========================
-
 def reset():
     session["tentativas"] = []
     session["mensagem"] = "🔄 Tentativas resetadas!"
@@ -98,25 +78,17 @@ def reset():
     sortear()
     return redirect(url_for("index"))
 
-
-# ==========================
-#     PÁGINA PRINCIPAL
-# ==========================
-
 def index():
     global pokemon_alvo
 
     if not session.get("logado"):
         return redirect(url_for("login"))
 
-    # carrega tentativas
     session.setdefault("tentativas", [])
     session.setdefault("venceu", False)
 
-    # carrega pontos do arquivo pontos.json
     session.setdefault("pontos", get_pontos(session["usuario"]))
 
-    # caso já tenha vencido
     if session["venceu"]:
         tent = session["tentativas"][::-1]
         set_pontos(session["usuario"], session["pontos"])
@@ -129,7 +101,6 @@ def index():
             pokemon_list=[]
         )
 
-    # tentativa enviada
     if request.method == "POST":
         chute = request.form.get("guess", "").lower()
 
@@ -142,21 +113,17 @@ def index():
             session["mensagem"] = "Pokémon inválido!"
             return redirect(url_for("index"))
 
-        # já tentado
         for t in session["tentativas"]:
             if t["nome"] == dados["nome"]:
                 session["mensagem"] = "❌ Você já tentou esse!"
                 return redirect(url_for("index"))
 
-        # registra tentativa
         tentativa = montar_feedback(dados)
         session["tentativas"].append(tentativa)
 
-        # perde pontos
-        if session["pontos"] > 0:
+        if dados["nome"] != pokemon_alvo["nome"] and session["pontos"] > 0:
             session["pontos"] -= 5
 
-        # acertou
         if dados["nome"] == pokemon_alvo["nome"]:
             session["venceu"] = True
             session["pontos"] += 50
@@ -166,7 +133,6 @@ def index():
         session.modified = True
         return redirect(url_for("index"))
 
-    # exibe tela normal
     mensagem = session.pop("mensagem", "")
     tent = session["tentativas"][::-1]
     nomes_usados = {t["nome"] for t in session["tentativas"]}
@@ -181,11 +147,6 @@ def index():
         pontos=session["pontos"]
     )
 
-
-# ==========================
-#      FEEDBACK
-# ==========================
-
 def montar_feedback(p):
     alvo = pokemon_alvo
     return {
@@ -199,8 +160,18 @@ def montar_feedback(p):
         "altura": p["altura"],
         "peso": p["peso"],
 
-        "tipo1_cor": "correto" if p["tipo1"] in alvo["tipos"] else "errado",
-        "tipo2_cor": "correto" if p["tipo2"] == alvo["tipo2"] else "errado",
+        "tipo1_cor": (
+            "correto" if p["tipo1"] == alvo["tipo1"]
+            else "outrolugar" if p["tipo1"] == alvo["tipo2"]
+            else "errado"
+        ),
+
+        "tipo2_cor": (
+            "correto" if p["tipo2"] == alvo["tipo2"]
+            else "outrolugar" if p["tipo2"] == alvo["tipo1"]
+            else "errado"
+        ),
+
         "habitat_cor": "correto" if p["habitat"] == alvo["habitat"] else "errado",
         "cor_cor": "correto" if p["cor"] == alvo["cor"] else "errado",
         "fase_cor": "correto" if p["fase"] == alvo["fase"] else "errado",
