@@ -109,7 +109,7 @@ Windows
 Linux/macOS
 
 ```bash
-source .venv/bin/activate
+. .venv/bin/activate
 ```
 
 ### 3️⃣ Instalar dependências
