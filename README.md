@@ -159,5 +159,5 @@ A função `montar_feedback()` analisa:
 | Peso     | Maior / Menor / Igual |
 
 ## 👨‍💻 Desenvolvedor
-Desenvolvido por Otavio, 2025.  
+Desenvolvido por Otavio e Pedro Nobile, 2025.  
 Projeto criado para estudos e aprimoramento em desenvolvimento web.
