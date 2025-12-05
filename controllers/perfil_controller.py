@@ -44,18 +44,15 @@ def excluir_conta():
 
     usuario_logado = session["usuario"]
 
-    # Remover do usuarios.json
     usuarios = carregar_usuarios()
     usuarios = [u for u in usuarios if u["usuario"] != usuario_logado]
     salvar_usuarios(usuarios)
 
-    # Remover dos pontos
     pontos = carregar_todos_pontos()
     if usuario_logado in pontos:
         del pontos[usuario_logado]
     salvar_todos_pontos(pontos)
 
-    # Remover foto do usuário
     caminho = f"static/img/{usuario_logado}.jpg"
     if os.path.exists(caminho):
         os.remove(caminho)
