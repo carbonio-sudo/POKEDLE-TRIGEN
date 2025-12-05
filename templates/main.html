@@ -1,35 +1,73 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Página de Login {% endblock titulo %}
+{% block titulo %} Início {% endblock titulo %}
 
 {% block conteudo %}
-<div class="login-container">
-    <h2>Login</h2>
 
-    <!-- Mensagem de erro (se houver) -->
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="alert alert-danger" role="alert">
-                {% for mensagem in messages %}
-                    <p>{{ mensagem }}</p>
-                {% endfor %}
+<div id="main-page">
+    <div id="main-box">
+
+        <div class="text-center mb-5">
+            <img src="/static/img/logo.png" 
+                 alt="Logo"
+                 style="width: 40px; height: 40px; margin-right: 10px; filter: drop-shadow(0px 0px 3px #000);">
+            <h1 class="fw-bold display-5 text-dark">Projeto PokéTrigen</h1>
+            <hr class="w-25 mx-auto my-3">
+        </div>
+
+        <div class="card shadow-lg border-0 mb-5">
+            <div class="card-body p-4">
+                <h4 class="card-title text-primary fw-bold mb-3">Sobre o Projeto</h4>
+
+                <p class="card-text fs-5">
+                    Este trabalho visa totalmente o aprendizado e a aplicação prática dos conhecimentos desenvolvidos na disciplina de Aplicações Web. 
+                    O projeto consiste na criação de um jogo interativo chamado <strong>PokéTrigen</strong>, desenvolvido em Python utilizando o framework Flask.
+                    O objetivo do jogo é desafiar o usuário a adivinhar um Pokémon com base em diversas características fornecidas pela PokéAPI, como tipo, cor,
+                    habitat, altura, peso e fase evolutiva. A cada tentativa, o sistema retorna feedback detalhado, indicando acertos e erros, permitindo que
+                    o jogador se aproxime da resposta correta de maneira progressiva.
+                </p>
+
+                <p class="card-text fs-5">
+                    Além da mecânica principal do jogo, o PokéTrigen também conta com sistema de login, registro de usuários, armazenamento de pontuações e 
+                    um ranking geral que incentiva a competição saudável entre os jogadores. O desenvolvimento deste projeto fortalece habilidades fundamentais 
+                    de programação, lógica, organização, manipulação de dados e criatividade, unindo aprendizado técnico a um tema divertido e nostálgico para 
+                    fãs de Pokémon.
+                </p>
             </div>
+        </div>
+
+        <div class="text-center mb-4">
+            <h1 class="fw-bold">🏆 Ranking de Jogadores</h1>
+            <p class="text-muted">Veja os melhores jogadores do PokéTrigen</p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center align-middle shadow-sm bg-white">
+                <thead class="table-danger">
+                    <tr>
+                        <th class="fw-bold">Posição</th>
+                        <th class="fw-bold">Jogador</th>
+                        <th class="fw-bold">Pontos</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in ranking %}
+                    <tr>
+                        <td class="fw-semibold">{{ loop.index }}</td>
+                        <td class="fw-semibold">{{ item.apelido }}</td>
+                        <td class="fw-semibold">{{ item.pontos }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if not ranking %}
+            <p class="text-center text-muted mt-3">Nenhum jogador ainda ganhou pontos.</p>
         {% endif %}
-    {% endwith %}
 
-    <form action="{{url_for('autenticar')}}" method="post">
-        <div class="form-group">
-            <label for="exampleInputEmail1">Email</label>
-            <input type="email" required class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <small id="emailHelp" class="form-text text-muted">Nós nunca iremos compartilhar seu Email</small>
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Senha</label>
-            <input type="password" name="senha" required class="form-control" id="exampleInputPassword1">
-        </div>
-        <button type="submit" class="btn btn-primary">Entrar</button>
-    </form>
-
-    <a href="#" class="forgot-password">Esqueci a senha</a>
+    </div>
 </div>
+
 {% endblock conteudo %}

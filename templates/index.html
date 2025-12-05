@@ -4,118 +4,153 @@
 
 {% block conteudo %}
 
-<h1 class="text-center mt-3 text-black fw-bold">Pokémon Wordle</h1>
+<div id="game-page">
 
-<h3 class="text-center text-primary mt-2">
-    Pontos: <b>{{ pontos }}</b>
-</h3>
+    <div id="game-background"></div>
 
-<form method="POST" class="text-center mt-4">
-    <input type="text" id="poke-input" name="guess" placeholder="Digite um Pokémon" autocomplete="off" required>
-    <div id="autocomplete-box"></div>
-    <button type="submit" class="btn btn-primary mt-2">Enviar</button>
-</form>
+    <h1 id="game-title" class="text-center mt-3 fw-bold">Pokémon Wordle</h1>
 
-<form action="/reset" method="POST" class="text-center mt-3">
-    <button class="btn btn-danger">Resetar Tentativas</button>
-</form>
+    <h3 id="score-display" class="text-center mt-2">
+        Pontos: <b>{{ pontos }}</b>
+    </h3>
 
-<p class="text-center fs-4 mt-3">{{ message }}</p>
+    <form id="guess-form" method="POST" class="text-center mt-4">
 
-<div class="container mt-4">
-    <div class="row text-center fw-bold">
-        <div class="col">Sprite</div>
-        <div class="col">Tipo 1</div>
-        <div class="col">Tipo 2</div>
-        <div class="col">Habitat</div>
-        <div class="col">Cor</div>
-        <div class="col">Fase</div>
-        <div class="col">Altura</div>
-        <div class="col">Peso</div>
-    </div>
-</div>
-
-<div class="container">
-    {% for row in attempts %}
-    <div class="row text-center mt-2">
-        <div class="col">
-            <img src="{{ row.sprite }}" width="64">
+        <div class="autocomplete-wrapper">
+            <input type="text" id="poke-input" class="game-input" name="guess"
+            placeholder="Digite um Pokémon" autocomplete="off" required>
+            <div id="autocomplete-box"></div>
+            <button type="submit" id="send-button" class="btn btn-primary mt-2">Enviar</button>
         </div>
+    </form>
 
-        <div class="col cell {{ row.tipo1_cor }}">{{ row.tipo1 }}</div>
-        <div class="col cell {{ row.tipo2_cor }}">{{ row.tipo2 }}</div>
-        <div class="col cell {{ row.habitat_cor }}">{{ row.habitat }}</div>
-        <div class="col cell {{ row.cor_cor }}">{{ row.cor }}</div>
-        <div class="col cell {{ row.fase_cor }}">{{ row.fase }}</div>
-        <div class="col cell {{ row.altura_cor }}">{{ row.altura }}</div>
-        <div class="col cell {{ row.peso_cor }}">{{ row.peso }}</div>
+    <form id="reset-form" action="/reset" method="POST" class="text-center mt-3">
+        <button id="reset-button" class="btn btn-danger">Resetar Tentativas</button>
+    </form>
+
+    <p id="game-message" class="text-center fs-4 mt-3">
+        {{ message }}
+    </p>
+
+    <div id="table-header" class="container mt-4">
+        <div class="row text-center fw-bold">
+            <div class="col">Icone</div>
+            <div class="col">Tipo 1</div>
+            <div class="col">Tipo 2</div>
+            <div class="col">Habitat</div>
+            <div class="col">Cor</div>
+            <div class="col">Fase</div>
+            <div class="col">Altura</div>
+            <div class="col">Peso</div>
+        </div>
     </div>
-    {% endfor %}
+
+    <div id="attempts-box" class="container">
+        {% for row in attempts %}
+        <div class="row text-center mt-2 game-row">
+            <div class="col">
+                <img src="{{ row.sprite }}" width="64">
+            </div>
+            <div class="col cell {{ row.tipo1_cor }}">{{ row.tipo1 }}</div>
+            <div class="col cell {{ row.tipo2_cor }}">{{ row.tipo2 }}</div>
+            <div class="col cell {{ row.habitat_cor }}">{{ row.habitat }}</div>
+            <div class="col cell {{ row.cor_cor }}">{{ row.cor }}</div>
+            <div class="col cell {{ row.fase_cor }}">{{ row.fase }}</div>
+            <div class="col cell {{ row.altura_cor }}">{{ row.altura }}</div>
+            <div class="col cell {{ row.peso_cor }}">{{ row.peso }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if session.venceu %}
+    <div id="tela-vitoria">
+        <div class="vitoria-box">
+            <h1>Parabéns!</h1>
+            <p>Você acertou: <b>{{ alvo }}</b></p>
+            <p>Pontuação final: <b>{{ pontos }}</b></p>
+
+            <form action="/reset" method="POST">
+                <button class="btn btn-success mt-3">Jogar Novamente</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 
-{% if session.venceu %}
-<div id="tela-vitoria">
-    <div class="vitoria-box">
-        <h1>🎉 Parabéns!</h1>
-        <p>Você acertou o Pokémon: <b>{{ alvo }}</b></p>
-        <p>Pontuação final: <b>{{ pontos }}</b></p>
-        <form action="/reset" method="POST">
-            <button class="btn btn-success mt-3">Jogar Novamente</button>
-        </form>
-    </div>
-</div>
-{% endif %}
 
-{% if alvo %}
-<h3 class="text-center mt-4 text-danger">
-    🔍 Pokémon sorteado: <b>{{ alvo }}</b>
-</h3>
-{% endif %}
 
 <script>
-const listaPokemons = {{ pokemon_list | tojson }};
+const lista = {{ pokemon_list | tojson }};
 const input = document.getElementById("poke-input");
 const box = document.getElementById("autocomplete-box");
 
+let index = -1;
+let sugestoes = [];
+
+// -------- AUTOCOMPLETE --------
 input.addEventListener("input", () => {
-    const value = input.value.toLowerCase();
+    const t = input.value.toLowerCase();
     box.innerHTML = "";
-    input.dataset.first = "";
+    box.style.display = "none";
+    index = -1;
 
-    if (!value) return;
+    if (!t) return;
 
-    const filtrados = listaPokemons
-        .filter(nome => nome.startsWith(value))
-        .slice(0, 8);
+    sugestoes = lista.filter(n => n.toLowerCase().startsWith(t)).slice(0, 10);
 
-    if (filtrados.length > 0) {
-        input.dataset.first = filtrados[0];
-    }
+    if (!sugestoes.length) return;
 
-    filtrados.forEach(nome => {
-        const item = document.createElement("div");
-        item.classList.add("suggestion");
-        item.textContent = nome;
+    sugestoes.forEach((nome) => {
+        const div = document.createElement("div");
+        div.className = "suggestion";
+        div.textContent = nome;
 
-        item.onclick = () => {
+        div.onclick = () => {
             input.value = nome;
             box.innerHTML = "";
+            box.style.display = "none";
         };
 
-        box.appendChild(item);
+        box.appendChild(div);
+    });
+
+    box.style.display = "block";
+});
+
+// -------- SETAS DO TECLADO --------
+input.addEventListener("keydown", (e) => {
+    const items = box.querySelectorAll(".suggestion");
+    if (!items.length) return;
+
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        index = (index + 1) % items.length;
+    } 
+    else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        index = (index - 1 + items.length) % items.length;
+    } 
+    else if (e.key === "Enter") {
+        if (index >= 0) {
+            e.preventDefault();
+            input.value = sugestoes[index];
+            box.innerHTML = "";
+            box.style.display = "none";
+        }
+        return;
+    }
+
+    items.forEach((item, i) => {
+        item.classList.toggle("active", i === index);
     });
 });
 
-document.querySelector("form").addEventListener("submit", () => {
-    box.innerHTML = "";
-});
-
-input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        const first = input.dataset.first;
-        if (first) {
-            input.value = first;
-        }
+// -------- FECHAR AUTOCOMPLETE AO CLICAR FORA --------
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".autocomplete-wrapper")) {
+        box.innerHTML = "";
+        box.style.display = "none";
     }
 });
 </script>

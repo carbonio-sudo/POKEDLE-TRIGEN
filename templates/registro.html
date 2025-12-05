@@ -3,32 +3,35 @@
 {% block titulo %} Registro {% endblock titulo %}
 
 {% block conteudo %}
-<div class="mx-auto mt-5" style="max-width: 420px;">
 
-    <h2 class="text-center mb-4">Criar Conta</h2>
+<div id="registro-page">
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="alert alert-info">
-                {% for m in messages %}
-                    <p>{{ m }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    <div id="background-registro"></div>
 
-    <form method="post">
-        <div class="mb-3">
-            <label>Usuário</label>
-            <input type="text" name="usuario" class="form-control" required>
-        </div>
+    <div id="registro-container">
+        <h2 id="registro-titulo">Criar Conta</h2>
 
-        <div class="mb-3">
-            <label>Senha</label>
-            <input type="password" name="senha" class="form-control" required>
-        </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div id="registro-alerta">
+                    {% for m in messages %}
+                        <p>{{ m }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-        <button class="btn btn-success w-100">Registrar</button>
-    </form>
+        <form id="registro-form" method="post">
+            <label for="registro-usuario">Usuário</label>
+            <input type="text" name="usuario" id="registro-usuario" placeholder="Digite seu nome" required>
+
+            <label for="registro-senha">Senha</label>
+            <input type="password" name="senha" id="registro-senha" placeholder="Digite sua senha" required>
+
+            <button id="registro-botao">Registrar</button>
+        </form>
+    </div>
+
 </div>
+
 {% endblock conteudo %}

@@ -2,19 +2,21 @@
     {
         "usuario": "jorge",
         "senha": "1",
-        "pontos": 180
-    },
-    {
-        "usuario": "1",
-        "senha": "1",
-        "pontos": 40,
-        "apelido": "dog"
+        "pontos": 180,
+        "apelido": "",
+        "foto": "static/img/jorge.jpg"
     },
     {
         "usuario": "2",
         "senha": "2",
         "apelido": "mobile",
-        "foto": "default.png",
+        "foto": "static/img/2.jpg",
         "pontos": 90
+    },
+    {
+        "usuario": "gabreu",
+        "senha": "3",
+        "apelido": "gabreu",
+        "foto": "default.png"
     }
 ]

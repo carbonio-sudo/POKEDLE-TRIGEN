@@ -1,27 +1,305 @@
-/* =======================================
-   FUNDO DO LOGIN
-======================================= */
+/* ===========================
+   ESTILO GERAL
+=========================== */
+body {
+    background: none !important;
+    margin: 0;
+    padding: 0;
+    font-family: Arial;
+}
+
+/* ===========================
+   CÉLULAS DA TABELA
+=========================== */
+.cell {
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: capitalize;
+    border: 2px solid #222;
+}
+
+.correto { background-color: #4CAF50 !important; }
+.errado { background-color: #E53935 !important; }
+
+.maior {
+    background-color: #FFB300 !important;
+    position: relative;
+}
+.maior::after {
+    content: "▲";
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.menor {
+    background-color: #FFB300 !important;
+    position: relative;
+}
+.menor::after {
+    content: "▼";
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.outrolugar {
+    background-color: #FFB300 !important;
+    position: relative;
+}
+
+
+/* ===========================
+   AUTOCOMPLETE
+=========================== */
+
+.autocomplete-wrapper {
+    position: relative;
+    width: 60%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+#autocomplete-box {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+
+    background: rgba(20, 60, 30, 0.92);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+
+    color: #d7ffd7;
+
+    max-height: 220px;
+    overflow-y: auto;
+
+    box-shadow: 0 8px 22px rgba(0,0,0,0.55);
+    padding: 6px 0;
+
+    display: none;
+    z-index: 9999;
+}
+
+.suggestion {
+    padding: 10px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.suggestion:hover,
+.suggestion.active {
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+}
+
+/* ===========================
+   TELA DE VITÓRIA
+=========================== */
+#tela-vitoria {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.vitoria-box {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.vitoria-box h1 { font-size: 32px; }
+
+/* ======================================================
+    PÁGINA DE LOGIN    
+====================================================== */
+
+/* ===========================
+      LOGIN
+=========================== */
 
 #login-page {
     position: relative;
-    min-height: 100vh;
     width: 100%;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     overflow: hidden;
-    font-family: "Roboto", sans-serif;
 }
 
 #login-background {
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
+    
     background-image: url("/static/img/Rayquaza_fundo.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: brightness(0.88) saturate(1.1);
+
+    filter: blur(6px) brightness(0.65);
+
     z-index: -1;
 }
 
-#login-background::after {
+#login-box {
+    width: 95%;
+    max-width: 480px;
+
+    padding: 35px;
+
+    border-radius: 18px;
+    background: rgba(0, 60, 0, 0.55);
+    backdrop-filter: blur(8px);
+
+    border: 2px solid rgba(255, 255, 255, 0.25);
+
+    color: white;
+    text-align: center;
+
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+#login-title {
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 0px #000;
+}
+
+/* Inputs */
+#login-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+
+    border-radius: 12px;
+    border: none;
+
+    background: rgba(0, 160, 0, 0.35);
+    color: white;
+
+    font-size: 17px;
+    outline: none;
+
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+}
+
+#login-form input:focus {
+    background: rgba(0, 180, 0, 0.55);
+    box-shadow: 0 0 10px #00ff88;
+}
+
+/* Botão */
+#login-botao {
+    width: 100%;
+    padding: 12px;
+
+    background: #006400;
+    color: white;
+
+    border-radius: 12px;
+    border: none;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+#login-botao:hover {
+    background: #009933;
+    transform: scale(1.03);
+}
+
+/* Alerta */
+#login-alerta {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+
+/* ======================================================
+    PÁGINA PRINCIPAL (MAIN)
+====================================================== */
+
+#main-page {
+    min-height: 100vh;
+    width: 100%;
+    background-image: url("/static/img/Menu_fundo.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+#main-box {
+    background: rgba(255, 255, 255, 0.60);
+    backdrop-filter: blur(8px);
+    padding: 35px;
+    max-width: 1000px;
+    width: 90%;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+}
+
+/* ==============================================
+            Jogo (index.html)
+=================================================*/
+
+/* ==========================================
+   FUNDO DO JOGO
+========================================== */
+
+#game-page {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: "Roboto", sans-serif;
+}
+
+#game-background {
+    position: fixed;
+    inset: 0;
+    background-image: url("/static/img/fundo_jogo.png");
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.85) saturate(1.1);
+    z-index: -1;
+}
+
+#game-background::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -29,120 +307,498 @@
     backdrop-filter: blur(2px);
 }
 
-/* =======================================
-   CAIXA CENTRAL DE LOGIN
-   (Bootstrap + efeito vidro)
-======================================= */
+/* ==========================================
+   TÍTULOS
+========================================== */
 
-#login-box {
-    background: rgba(40, 90, 55, 0.55);   /* cor Pokémon Trigen */
-    padding: 32px;
-    border-radius: 18px;
-
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-
-    box-shadow: 0 15px 35px rgba(0,0,0,0.45);
-
+#game-title {
     color: #e9f6ee;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.55);
-}
-
-/* =======================================
-   TÍTULO
-======================================= */
-
-#login-title {
-    text-align: center;
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 25px;
-    color: #fff;
-    letter-spacing: 1px;
+    font-size: 40px;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.7);
     text-decoration: underline;
     text-underline-offset: 8px;
-    text-decoration-color: rgba(255,255,255,0.18);
 }
 
-/* =======================================
-   LABELS (continua Bootstrap, só estiliza)
-======================================= */
-
-.login-label {
-    color: #d7f2dd !important;
-    font-weight: 600 !important;
-    margin-bottom: 6px;
+#score-display {
+    color: #caffd7;
+    font-size: 24px;
 }
 
-/* =======================================
-   INPUTS (bootstrap + pílula)
-======================================= */
+/* ==========================================
+   INPUT DO JOGO
+========================================== */
 
-.login-input.form-control {
+.game-input {
+    width: 60%;
+    max-width: 420px;
+
     background: rgba(60, 140, 80, 0.9) !important;
     color: #e9f6ee !important;
-
-    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    border: 2px solid rgba(255,255,255,0.12) !important;
     border-radius: 999px !important;
 
-    box-shadow: inset 0 -3px 8px rgba(0,0,0,0.28) !important;
-
     padding: 12px 20px !important;
-    transition: 0.2s ease !important;
+    box-shadow: inset 0 -3px 8px rgba(0,0,0,0.3) !important;
+
+    outline: none !important;
+    text-align: center;
+    font-size: 18px;
 }
 
-.login-input::placeholder {
-    color: rgba(230,247,233,0.85) !important;
-}
-
-.login-input:focus {
+.game-input:focus {
     transform: translateY(-2px);
-    box-shadow: inset 0 -6px 12px rgba(0,0,0,0.35),
-                0 14px 26px rgba(0,0,0,0.5) !important;
-    border-color: rgba(255,255,255,0.35) !important;
+    box-shadow: inset 0 -6px 12px rgba(0,0,0,0.45),
+                0 12px 26px rgba(0,0,0,0.55) !important;
 }
 
-/* =======================================
-   BOTÃO (Bootstrap .btn-primary modificado)
-======================================= */
+/* Caixa de sugestões */
+#autocomplete-box {
+    width: 60%;
+    max-width: 420px;
+    margin: 0 auto;
+    background: rgba(20,60,30,0.8);
+    border-radius: 12px;
+    color: #d7ffd7;
+    text-align: left;
+    padding: 10px;
+}
 
-#login-button.btn.btn-primary {
+/* ==========================================
+   BOTÕES
+========================================== */
+
+#send-button.btn-primary {
     background: #2f6b3f !important;
-    border: none !important;
     border-radius: 16px !important;
+    border: none !important;
 
-    padding: 12px 20px !important;
-    font-size: 18px !important;
-    font-weight: 600 !important;
-
-    color: #e9f6ee !important;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.45) !important;
-
-    transition: 0.18s ease !important;
+    padding: 12px 26px !important;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.45) !important;
 }
 
-#login-button.btn-primary:hover {
+#send-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 18px 32px rgba(0,0,0,0.55) !important;
 }
 
-#login-button.btn-primary:active {
-    transform: translateY(0) !important;
+#reset-button.btn-danger {
+    border-radius: 12px !important;
+}
+
+/* ==========================================
+   TABELA DE TENTATIVAS
+========================================== */
+
+#table-header {
+    background: rgba(25, 60, 40, 0.5);
+    padding: 12px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    color: #f3fff7;
+}
+
+.game-row .cell {
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* ==========================================
+   TELA DE VITÓRIA
+========================================== */
+
+#tela-vitoria {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vitoria-box {
+    background: rgba(40, 90, 55, 0.75);
+    padding: 35px;
+    border-radius: 22px;
+
+    color: #e9f6ee;
+    text-align: center;
+
+    box-shadow: 0 15px 35px rgba(0,0,0,0.55);
+}
+
+/* -----------------------------
+   NAVBAR POKÉTRIGEN ESTILIZADA
+------------------------------ */
+
+#trigen-navbar {
+    background: linear-gradient(90deg, #2f6b3f , #285835 );
+    border-bottom: 4px solid #FFD700;
+    padding: 12px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+}
+
+/* Marca (título PokéTrigen) */
+#trigen-brand {
+    font-size: 30px;
+    color: #FFCB05 !important;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 0 #2B2B2B;
+    font-weight: 900;
+    transition: 0.2s ease-in-out;
+}
+
+#trigen-brand:hover {
+    transform: scale(1.08);
+}
+
+/* Links */
+#trigen-nav-links .nav-link {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFF !important;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+#trigen-nav-links .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFCB05 !important;
+    transform: translateY(-2px);
+}
+
+/* Botões de login/logout */
+#trigen-login-btn,
+#trigen-register-btn,
+#trigen-logout-btn {
+    font-weight: bold;
+    border-width: 2px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+#trigen-login-btn:hover,
+#trigen-register-btn:hover,
+#trigen-logout-btn:hover {
+    transform: scale(1.07);
+}
+
+/* Foto do usuário */
+#trigen-user-photo {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #FFD700;
+    margin-right: 10px;
+}
+
+/* Toggler (modo mobile) */
+#trigen-toggler {
+    filter: drop-shadow(0px 0px 5px #000);
+}
+
+/* Menu mobile aberto */
+#navbarMain {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 10px;
 }
 
 
-#forgot-password-link:hover {
-    opacity: 1;
-    text-shadow: 0 0 6px rgba(200,255,220,0.9);
+/* ===========================
+      REGISTRO
+=========================== */
+
+/* Página inteira */
+#registro-page {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
 }
 
-/* =======================================
-   ALERTA DE ERRO (Bootstrap alert-danger)
-======================================= */
+/* Fundo */
+#background-registro {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 
-#login-alert.alert-danger {
-    background: rgba(255, 80, 80, 0.8) !important;
-    border: none !important;
-    border-radius: 10px !important;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.4) !important;
+    background-image: url("/static/img/Fundo_registro.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    filter: blur(6px) brightness(0.65);
+
+    z-index: -1;
 }
+
+/* Caixa central */
+#registro-container {
+    width: 95%;
+    max-width: 480px;
+
+    padding: 35px;
+
+    border-radius: 18px;
+    background: rgba(0, 60, 0, 0.55);
+    backdrop-filter: blur(8px);
+
+    border: 2px solid rgba(255, 255, 255, 0.25);
+
+    color: white;
+    text-align: center;
+
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Título */
+#registro-titulo {
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 0px #000;
+}
+
+/* Inputs */
+#registro-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+
+    border-radius: 12px;
+    border: none;
+
+    background: rgba(0, 160, 0, 0.35);
+    color: white;
+
+    font-size: 17px;
+
+    outline: none;
+
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+}
+
+#registro-form input:focus {
+    background: rgba(0, 180, 0, 0.55);
+    box-shadow: 0 0 10px #00ff88;
+}
+
+/* Botão */
+#registro-botao {
+    width: 100%;
+    padding: 12px;
+
+    background: #006400;
+    color: white;
+
+    border-radius: 12px;
+    border: none;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+#registro-botao:hover {
+    background: #009933;
+    transform: scale(1.03);
+}
+
+/* Alerta */
+#registro-alerta {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Título */
+#registro-titulo {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+/* Inputs */
+#registro-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(50, 205, 50, 0.4);
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Placeholder */
+#registro-form input::placeholder {
+    color: #eee;
+}
+
+/* Botão */
+#registro-botao {
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(0, 150, 0, 0.7);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Hover */
+#registro-botao:hover {
+    background: rgba(0, 180, 0, 0.9);
+    cursor: pointer;
+}
+
+/* Alerta */
+#registro-alerta {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
+/* ============================
+   EDITAR PERFIL
+============================ */
+
+#editar-page {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#editar-background {
+    background: url('/static/img/Fundo_registro.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: brightness(0.85) saturate(1.1);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+/* Caixa central */
+#editar-container {
+    width: 90%;
+    max-width: 520px;
+
+    background: rgba(0, 80, 0, 0.55);
+    padding: 35px 40px;
+    border-radius: 18px;
+
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
+
+    color: white;
+    text-align: center;
+}
+
+/* Título */
+#editar-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+/* Foto */
+#editar-foto {
+    width: 150px;
+    border: 4px solid #00aa33;
+    box-shadow: 0 0 15px #000;
+}
+
+/* Labels */
+.editar-label {
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+}
+
+/* Inputs */
+.editar-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(0, 160, 0, 0.4);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+.editar-input:focus {
+    background: rgba(0, 180, 0, 0.55);
+    box-shadow: 0 0 8px #00ff88;
+}
+
+/* Botão salvar */
+.editar-botao {
+    width: 100%;
+    padding: 12px;
+    border-radius: 18px;
+    background: rgba(0, 150, 0, 0.85);
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: .2s;
+}
+
+.editar-botao:hover {
+    background: rgba(0, 180, 0, 1);
+    transform: scale(1.03);
+    cursor: pointer;
+}
+
+/* Botão excluir */
+.editar-botao-excluir {
+    width: 100%;
+    padding: 12px;
+    border-radius: 18px;
+    background: rgba(180, 0, 0, 0.75);
+    border: none;
+    color: white;
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.editar-botao-excluir:hover {
+    background: rgba(220, 0, 0, 0.9);
+    transform: scale(1.03);
+    cursor: pointer;
+}
+
