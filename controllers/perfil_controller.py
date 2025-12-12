@@ -1,6 +1,6 @@
 from flask import render_template, request, session, redirect, url_for
 from models.user import carregar_usuarios, salvar_usuarios
-from models.pontos import carregar_todos_pontos, salvar_todos_pontos
+from models.pontos import carregar_pontos, set_pontos
 import os
 
 def perfil():
@@ -48,10 +48,10 @@ def excluir_conta():
     usuarios = [u for u in usuarios if u["usuario"] != usuario_logado]
     salvar_usuarios(usuarios)
 
-    pontos = carregar_todos_pontos()
+    pontos = carregar_pontos()
     if usuario_logado in pontos:
         del pontos[usuario_logado]
-    salvar_todos_pontos(pontos)
+    set_pontos(pontos)
 
     caminho = f"static/img/{usuario_logado}.jpg"
     if os.path.exists(caminho):

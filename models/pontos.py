@@ -23,7 +23,7 @@ def add_pontos(usuario, pontos):
     atuais = get_pontos(usuario)
     set_pontos(usuario, atuais + pontos)
 
-def get_all_pontos():
+def carregar_pontos():
     if os.path.exists(CAMINHO_DB):
         with open(CAMINHO_DB, "r") as f:
             dados = json.load(f)
